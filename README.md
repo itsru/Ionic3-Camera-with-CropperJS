@@ -12,6 +12,10 @@
 
 This app is to demo the utilization of Camera or Album select and utilization of a CropperJS View.
 
+### Ionic View Demo
+
+If you have Ionic View on your device then to view the demo use : c4aed1f3
+
 ### Known issues at the time of development
 
 Known iOS resource limits: As iOS devices limit memory, the browser may crash when you are cropping a large image (iPhone camera resolution). To avoid this, you may resize the image first (below 1024px) before start a cropper.
