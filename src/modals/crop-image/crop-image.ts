@@ -20,14 +20,12 @@ export class CropImageModal {
   imageBase64: any;
   width: number;
   height: number;
-  quality: number;
   cropper: Cropper;
 
   constructor(public viewCtrl: ViewController, public navParams: NavParams) {
     this.imageBase64 = this.navParams.get("imageBase64");
     this.width = this.navParams.get("width");
     this.height = this.navParams.get("height");
-    this.quality = ((this.navParams.get("quality") > 100) || (this.navParams.get("quality") < 1)) ? 100 : this.navParams.get("quality");
   }
 
   cropperLoad() {
@@ -62,7 +60,7 @@ export class CropImageModal {
     let croppedImgB64String: string = this.cropper.getCroppedCanvas({
       width: this.width,
       height: this.height
-    }).toDataURL('image/jpeg', (this.quality / 100));
+    }).toDataURL('image/jpeg', (100 / 100));
     this.viewCtrl.dismiss(croppedImgB64String);
   }
 }

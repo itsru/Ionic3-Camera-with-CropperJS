@@ -21,7 +21,7 @@ export class Imaging {
     return Observable.create(observer => {
       //Set default options for taking an image with the camera
       let imageOptions: any = {
-        quality: 75,
+        quality: quality,
         destinationType: Camera.DestinationType.DATA_URL,
         sourceType: Camera.PictureSourceType.CAMERA,
         encodingType: Camera.EncodingType.JPEG,
@@ -54,7 +54,7 @@ export class Imaging {
       selectAlert.onDidDismiss(() => {
         this.getCameraImage(imageOptions).subscribe(image => {
           if (useCropperJS) {
-            let cropModal = this.modalCtrl.create(CropImageModal, { "imageBase64": image, "width": width, "height": height, "quality": quality });
+            let cropModal = this.modalCtrl.create(CropImageModal, { "imageBase64": image, "width": width, "height": height });
             cropModal.onDidDismiss((croppedImage: any) => {
               if (!croppedImage)
                 observer.error("Canceled while cropping.")
