@@ -1,17 +1,53 @@
+<!--
+ * Demo of Cropper.js v1.0.0-Beta2 with Ionic v2.2.1
+ * https://github.com/itsru/Ionic2-Camera-with-CropperJS
+ *
+ * Copyright (c) 2017 Ru Selvadurai
+ * Released under the MIT license
+ *
+ * Date: 2017-03-13
+-->
 <ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
+  <ion-navbar color="dark">
+    <ion-title>CropperJS Demo</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
+  <h2>Cropper JS with Ionic 2!</h2>
+  <img src={{image}} *ngIf="image" />
+
+  <p text-center *ngIf="!image">
+    Image Will Show Here
   </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <ion-list>
+    <ion-item>
+      <ion-label>Use Cropper JS</ion-label>
+      <ion-toggle [(ngModel)]="useCropperJS">Use CropperJS</ion-toggle>
+    </ion-item>
+    <div *ngIf="useCropperJS">
+      <ion-item>
+        <ion-label>Width: {{width}}</ion-label>
+        <ion-range min="100" max="1024" [(ngModel)]="width">
+          <ion-icon range-left name="ios-arrow-round-back-outline"></ion-icon>
+          <ion-icon range-right name="ios-arrow-round-forward-outline"></ion-icon>
+        </ion-range>
+      </ion-item>
+      <ion-item>
+        <ion-label>Height: {{height}}</ion-label>
+        <ion-range min="100" max="1024" step="2" [(ngModel)]="height">
+          <ion-icon range-left name="ios-arrow-round-down-outline"></ion-icon>
+          <ion-icon range-right name="ios-arrow-round-up-outline"></ion-icon>
+        </ion-range>
+      </ion-item>
+      <ion-item>
+        <ion-label>Quality: {{quality}}</ion-label>
+        <ion-range min="5" max="100" step="5" snap="true" [(ngModel)]="quality">
+          <ion-icon range-left name="ios-remove-outline"></ion-icon>
+          <ion-icon range-right name="ios-add-outline"></ion-icon>
+        </ion-range>
+      </ion-item>
+    </div>
+  </ion-list>
+  <button ion-button block outline (click)="addPhoto()">Take A Picture</button>
 </ion-content>
