@@ -59,7 +59,10 @@ export class CropImageModal {
   cancel() { this.viewCtrl.dismiss(); }
 
   finish() {
-    let croppedImgB64String: string = this.cropper.getCroppedCanvas().toDataURL('image/jpeg', (100 / 100));
+    let croppedImgB64String: string = this.cropper.getCroppedCanvas({
+      maxWidth: this.width,
+      maxHeight: this.height
+    }).toDataURL('image/jpeg', (100 / 100));
     this.viewCtrl.dismiss(croppedImgB64String);
   }
 }
