@@ -1,11 +1,11 @@
 /*!
- * Demo of Cropper.js v1.0.0-Beta2 with Ionic v2.2.1
- * https://github.com/itsru/Ionic2-Camera-with-CropperJS
+ * Demo of Cropper.js v1.3.0 with Ionic v3
+ * https://github.com/itsru/Ionic3-Camera-with-CropperJS
  *
- * Copyright (c) 2017 Ru Selvadurai
+ * Copyright (c) 2018 Ru Selvadurai
  * Released under the MIT license
  *
- * Date: 2017-03-13
+ * Date: 2018-02-28
  */
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
