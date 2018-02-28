@@ -1,25 +1,26 @@
-import { NgModule, ErrorHandler } from '@angular/core';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { NgModule } from '@angular/core';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { CropperJSDemoApp } from './app.component';
-import { CropImageModal } from '../modals/crop-image/crop-image';
-import { HomePage } from '../pages/home/home';
-import { Imaging } from '../providers/imaging';
+import { PAGES, MODALS, PROVIDERS, MODULES } from './app.imports';
 
 @NgModule({
   declarations: [
     CropperJSDemoApp,
-    CropImageModal,
-    HomePage
+    PAGES,
+    MODALS
   ],
   imports: [
+    MODULES,
     IonicModule.forRoot(CropperJSDemoApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     CropperJSDemoApp,
-    CropImageModal,
-    HomePage
+    PAGES,
+    MODALS
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Imaging]
+  providers: [
+    PROVIDERS
+  ]
 })
 export class AppModule {}

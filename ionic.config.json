@@ -1,6 +1,8 @@
 {
-  "name": "Ionic2CameraWithCropperJS",
-  "app_id": "c4aed1f3",
-  "v2": true,
-  "typescript": true
+  "name": "Ionic3CameraWithCropperJS",
+  "app_id": "c5286062",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
 }

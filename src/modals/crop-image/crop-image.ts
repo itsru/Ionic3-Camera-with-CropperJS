@@ -21,16 +21,13 @@ export class CropImageModal {
   width: number;
   height: number;
   cropper: Cropper;
+  cropperOptions: any;
 
   constructor(public viewCtrl: ViewController, public navParams: NavParams) {
     this.imageBase64 = this.navParams.get("imageBase64");
     this.width = this.navParams.get("width");
     this.height = this.navParams.get("height");
-  }
-
-  cropperLoad() {
-    //Set your required cropperJS options as seen here https://github.com/fengyuanchen/cropperjs/blob/master/README.md#options
-    this.cropper = new Cropper(this.input.nativeElement, {
+    this.cropperOptions = {
       dragMode: 'crop',
       aspectRatio: this.width / this.height,
       modal: true,
@@ -46,8 +43,13 @@ export class CropImageModal {
       cropBoxMovable: true,
       cropBoxResizable: true,
       scalable: false,
-      crop: (e: Cropper.CropperCustomEvent) => {}
-    });
+      crop: (e) => {}
+    };
+  }
+
+  cropperLoad() {
+    //Set your required cropperJS options as seen here https://github.com/fengyuanchen/cropperjs/blob/master/README.md#options
+    this.cropper = new Cropper(this.input.nativeElement, this.cropperOptions);
   }
 
   cropperReset() { this.cropper.reset() }
@@ -57,10 +59,7 @@ export class CropImageModal {
   cancel() { this.viewCtrl.dismiss(); }
 
   finish() {
-    let croppedImgB64String: string = this.cropper.getCroppedCanvas({
-      width: this.width,
-      height: this.height
-    }).toDataURL('image/jpeg', (100 / 100));
+    let croppedImgB64String: string = this.cropper.getCroppedCanvas().toDataURL('image/jpeg', (100 / 100));
     this.viewCtrl.dismiss(croppedImgB64String);
   }
 }

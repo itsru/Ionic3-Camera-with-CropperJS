@@ -1,33 +1,34 @@
 /*!
- * Demo of Cropper.js v1.0.0-Beta2 with Ionic v2.2.1
- * https://github.com/itsru/Ionic2-Camera-with-CropperJS
+ * Demo of Cropper.js v1.3.0 with Ionic v3
+ * https://github.com/itsru/Ionic3-Camera-with-CropperJS
  *
- * Copyright (c) 2017 Ru Selvadurai
+ * Copyright (c) 2018 Ru Selvadurai
  * Released under the MIT license
  *
- * Date: 2017-03-13
+ * Date: 2018-02-28
  */
 import { Injectable } from '@angular/core';
-import { AlertController, Platform, ModalController } from 'ionic-angular';
-import { Camera } from 'ionic-native';
+import { AlertController, ModalController } from 'ionic-angular';
+import { Camera } from '@ionic-native/camera';
 import { Observable } from 'rxjs/Observable';
 import { CropImageModal } from '../modals/crop-image/crop-image';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 @Injectable()
 export class Imaging {
-  constructor(public platform: Platform, public alertCtrl: AlertController, public modalCtrl: ModalController) { }
+  constructor(private alertCtrl: AlertController, public modalCtrl: ModalController, private androidPermissions: AndroidPermissions, private camera: Camera) { }
 
   getImage(width: number, height: number, quality: number, useCropperJS: boolean) {
     return Observable.create(observer => {
       //Set default options for taking an image with the camera
       let imageOptions: any = {
         quality: quality,
-        destinationType: Camera.DestinationType.DATA_URL,
-        sourceType: Camera.PictureSourceType.CAMERA,
-        encodingType: Camera.EncodingType.JPEG,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        sourceType: this.camera.PictureSourceType.CAMERA,
+        encodingType: this.camera.EncodingType.JPEG,
         correctOrientation: 1,
         saveToPhotoAlbum: false,
-        mediaType: Camera.MediaType.PICTURE,
+        mediaType: this.camera.MediaType.PICTURE,
         cameraDirection: 1
       };
 
@@ -39,7 +40,7 @@ export class Imaging {
           text: 'Albums',
           handler: data => {
             //Change sourceType to PHOTOLIBRARY
-            imageOptions.sourceType = Camera.PictureSourceType.PHOTOLIBRARY;
+            imageOptions.sourceType = this.camera.PictureSourceType.PHOTOLIBRARY;
             selectAlert.dismiss();
           }
         }, {
@@ -77,16 +78,22 @@ export class Imaging {
 
   getCameraImage(options: any) {
     return Observable.create(observer => {
-      this.platform.ready().then(() => {
-        Camera.getPicture(options).then((imageData: any) => {
-          // imageData is a base64 encoded string as per options set above
-          let base64Image: string = "data:image/jpeg;base64," + imageData;
-          observer.next(base64Image);
-          observer.complete();
-        }, error => {
-          observer.error(error);
-        });
-      });
+      this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
+        success => {
+          this.camera.getPicture(options).then((imageData: any) => {
+            // imageData is a base64 encoded string as per options set above
+            let base64Image: string = "data:image/jpeg;base64," + imageData;
+            observer.next(base64Image);
+            observer.complete();
+          }, error => {
+            observer.error(error);
+          });
+        },
+        err => {
+          this.androidPermissions.requestPermissions(this.androidPermissions.PERMISSION.CAMERA);
+          observer.error("Try again");
+        }
+      );
     });
   }
 
