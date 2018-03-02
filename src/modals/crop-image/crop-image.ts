@@ -1,5 +1,5 @@
 /*!
- * Demo of Cropper.js v1.3.0 with Ionic v3
+ * Demo of Cropper.js v1.3.1 with Ionic v3
  * https://github.com/itsru/Ionic3-Camera-with-CropperJS
  *
  * Copyright (c) 2018 Ru Selvadurai
@@ -27,6 +27,7 @@ export class CropImageModal {
     this.imageBase64 = this.navParams.get("imageBase64");
     this.width = this.navParams.get("width");
     this.height = this.navParams.get("height");
+    //Set your required cropperJS options as seen here https://github.com/fengyuanchen/cropperjs/blob/master/README.md#options
     this.cropperOptions = {
       dragMode: 'crop',
       aspectRatio: this.width / this.height,
@@ -48,7 +49,6 @@ export class CropImageModal {
   }
 
   cropperLoad() {
-    //Set your required cropperJS options as seen here https://github.com/fengyuanchen/cropperjs/blob/master/README.md#options
     this.cropper = new Cropper(this.input.nativeElement, this.cropperOptions);
   }
 
@@ -60,8 +60,8 @@ export class CropImageModal {
 
   finish() {
     let croppedImgB64String: string = this.cropper.getCroppedCanvas({
-      maxWidth: this.width,
-      maxHeight: this.height
+      width: this.width,
+      height: this.height
     }).toDataURL('image/jpeg', (100 / 100));
     this.viewCtrl.dismiss(croppedImgB64String);
   }

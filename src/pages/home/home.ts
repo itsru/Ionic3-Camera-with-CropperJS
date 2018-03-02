@@ -1,5 +1,5 @@
 /*!
- * Demo of Cropper.js v1.3.0  with Ionic v3
+ * Demo of Cropper.js v1.3.1  with Ionic v3
  * https://github.com/itsru/Ionic3-Camera-with-CropperJS
  *
  * Copyright (c) 2018 Ru Selvadurai
