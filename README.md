@@ -14,7 +14,7 @@
 
 ### Purpose
 
-This app is to demo the utilization of Camera or Album select and utilization of a CropperJS View.
+This app is to demo the utilization of Camera or Album select and utilization of CropperJS in a modal view.
 
 ### Ionic View Demo
 
@@ -28,4 +28,4 @@ Known iOS resource limits: As iOS devices limit memory, the browser may crash wh
 
 Ionic - http://ionicframework.com/
 
-CropperJS - https://github.com/fengyuanchen/cropper
+CropperJS - https://github.com/fengyuanchen/cropperjs
