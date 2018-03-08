@@ -9,72 +9,70 @@
  */
 import { Injectable } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
-import { Camera } from '@ionic-native/camera';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Observable } from 'rxjs/Observable';
 import { CropImageModal } from '../modals/crop-image/crop-image';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 @Injectable()
 export class Imaging {
-  constructor(private alertCtrl: AlertController, public modalCtrl: ModalController, private androidPermissions: AndroidPermissions, private camera: Camera) { }
+  constructor(private alertCtrl: AlertController, public modalCtrl: ModalController, private androidPermissions: AndroidPermissions, public camera: Camera) { }
 
   getImage(width: number, height: number, quality: number, useCropperJS: boolean) {
     return Observable.create(observer => {
-      //Set default options for taking an image with the camera
-      let imageOptions: any = {
-        quality: quality,
-        destinationType: this.camera.DestinationType.DATA_URL,
-        sourceType: this.camera.PictureSourceType.CAMERA,
-        encodingType: this.camera.EncodingType.JPEG,
-        correctOrientation: 1,
-        saveToPhotoAlbum: false,
-        mediaType: this.camera.MediaType.PICTURE,
-        cameraDirection: 1
-      };
+        //Set default options for taking an image with the camera
+        let imageOptions: CameraOptions = {
+          quality: quality,
+          destinationType: this.camera.DestinationType.DATA_URL,
+          sourceType: this.camera.PictureSourceType.CAMERA,
+          encodingType: this.camera.EncodingType.JPEG,
+          correctOrientation: true,
+          saveToPhotoAlbum: false,
+          mediaType: this.camera.MediaType.PICTURE,
+          cameraDirection: 1
+        };
 
-      let selectAlert = this.alertCtrl.create({
-        title: 'Let\'s add a picture!',
-        message: "Select how you would like to add the picture",
-        enableBackdropDismiss: false,
-        buttons: [{
-          text: 'Albums',
-          handler: data => {
-            //Change sourceType to PHOTOLIBRARY
-            imageOptions.sourceType = this.camera.PictureSourceType.PHOTOLIBRARY;
-            selectAlert.dismiss();
-          }
-        }, {
+        let selectAlert = this.alertCtrl.create({
+          title: 'Let\'s add a picture!',
+          message: "Select how you would like to add the picture",
+          enableBackdropDismiss: false,
+          buttons: [{
+            text: 'Albums',
+            handler: data => {
+              //Change sourceType to PHOTOLIBRARY
+              imageOptions.sourceType = this.camera.PictureSourceType.PHOTOLIBRARY;
+              selectAlert.dismiss();
+            }
+          }, {
             text: 'Camera',
             handler: data => {
               selectAlert.dismiss();
             }
           }]
-      });
+        });
 
-      //onDismiss handle image and call crop if requested
-      selectAlert.onDidDismiss(() => {
-        this.getCameraImage(imageOptions).subscribe(image => {
-          if (useCropperJS) {
-            let cropModal = this.modalCtrl.create(CropImageModal, { "imageBase64": image, "width": width, "height": height });
-            cropModal.onDidDismiss((croppedImage: any) => {
-              if (!croppedImage)
-                observer.error("Canceled while cropping.")
-              else {
+        //onDismiss handle image and call crop if requested
+        selectAlert.onDidDismiss(() => {
+          this.getCameraImage(imageOptions).subscribe(image => {
+            if (useCropperJS) {
+              this.cropImage(image, width, height).subscribe(croppedImage => {
                 observer.next(croppedImage);
                 observer.complete();
-              }
-            });
-            cropModal.present();
-          }
-          else {
-            observer.next(image);
-            observer.complete();
-          }
-        }, error => observer.error(error));
+              }, error => {
+                observer.error("Canceled while cropping.");
+              });
+            }
+            else {
+              observer.next(image);
+              observer.complete();
+            }
+          }, error => observer.error(error));
+        });
+        selectAlert.present();
       });
-      selectAlert.present();
-    });
-  }
+    }
+
+
 
   getCameraImage(options: any) {
     return Observable.create(observer => {
@@ -94,6 +92,22 @@ export class Imaging {
           observer.error("Try again");
         }
       );
+    });
+  }
+
+  cropImage(image: string, width: number, height: number) {
+    return Observable.create(observer => {
+      let cropModal = this.modalCtrl.create(CropImageModal, { "imageBase64": image, "width": width, "height": height });
+      cropModal.onDidDismiss((croppedImage: any) => {
+        if (!croppedImage)
+          observer.error("Canceled while cropping.");
+        else {
+          // observer.next(this.decodeFromBase64(croppedImage));
+          observer.next(croppedImage);
+          observer.complete();
+        }
+      });
+      cropModal.present();
     });
   }
 

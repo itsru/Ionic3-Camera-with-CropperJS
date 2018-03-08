@@ -15,11 +15,16 @@
 
 <ion-content padding>
   <h2>Cropper JS with Ionic 3!</h2>
-  <img src={{image}} *ngIf="image" />
 
-  <p text-center *ngIf="!image">
-    Image Will Show Here
-  </p>
+  <ion-grid>
+    <ion-row justify-content-center align-items-center>
+      <p text-center *ngIf="!image">
+        Image Will Show Here
+      </p>
+      <img src={{image}} *ngIf="image" />
+    </ion-row>
+  </ion-grid>
+
   <ion-list>
     <ion-item>
       <ion-label>Use Cropper JS</ion-label>
@@ -49,5 +54,6 @@
       </ion-item>
     </div>
   </ion-list>
-  <button ion-button block outline (click)="addPhoto()">Take A Picture</button>
+  <input type="file" #fileInput style="visibility: hidden; height: 0px" name="files[]" (change)="captureWebImage($event)" />
+  <button ion-button block outline (click)="addPhoto($event)"><span *ngIf="!platform.is('cordova')">Upload an image</span><span *ngIf="platform.is('cordova')">Take A Picture</span></button>
 </ion-content>
