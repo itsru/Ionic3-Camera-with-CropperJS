@@ -26,21 +26,24 @@ export class HomePage {
   constructor(public platform: Platform, public navCtrl: NavController, public imaging: Imaging, public toastCtrl: ToastController, public modalCtrl: ModalController) {}
 
   addPhoto(event){
-    if (Camera['installed']()) {
-    //Add Photo options (Image Width(px), Image Height(px), Quality(0-100 number) Crop Image With CropperJS(boolean))
-    this.imaging.getImage(this.width, this.height, this.quality, this.useCropperJS).subscribe(data => this.image = data, error =>
-      {
-        // Toast errot and return DEFAULT_PHOTO from Constants
-        this.toast(error);
-      });
-    } else {
-      // Call native browser file upload
-      this.fileInput.nativeElement.click();
-    }
+    this.platform.ready().then(() => {
+      if (Camera['installed']()) {
+      //Add Photo options (Image Width(px), Image Height(px), Quality(0-100 number) Crop Image With CropperJS(boolean))
+      this.imaging.getImage(this.width, this.height, this.quality, this.useCropperJS).subscribe(data => this.image = data, error =>
+        {
+          // Toast errot and return DEFAULT_PHOTO from Constants
+          this.toast(error);
+        });
+      } else {
+        // Call native browser file upload
+        this.fileInput.nativeElement.click();
+      }
+    });
   }
 
 
-  captureWebImage(event:readerEvent) {
+  captureWebImage(event:any) {
+    let self = this;
     let imageData: string = null;
     let reader = new FileReader();
 
@@ -59,7 +62,7 @@ export class HomePage {
 
     reader.onabort = function() {
       // Handle browser file upload abort
-      this.image = "";
+      self.image = "";
     };
     reader.readAsDataURL(event.target.files[0]);
   }

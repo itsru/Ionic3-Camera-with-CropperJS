@@ -8,7 +8,7 @@
  * Date: 2018-02-28
  */
 import { Injectable } from '@angular/core';
-import { AlertController, ModalController } from 'ionic-angular';
+import { AlertController, ModalController, Platform} from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Observable } from 'rxjs/Observable';
 import { CropImageModal } from '../modals/crop-image/crop-image';
@@ -16,7 +16,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 @Injectable()
 export class Imaging {
-  constructor(private alertCtrl: AlertController, public modalCtrl: ModalController, private androidPermissions: AndroidPermissions, public camera: Camera) { }
+  constructor(private alertCtrl: AlertController, public modalCtrl: ModalController, private androidPermissions: AndroidPermissions, public camera: Camera, public platform: Platform) { }
 
   getImage(width: number, height: number, quality: number, useCropperJS: boolean) {
     return Observable.create(observer => {
@@ -76,22 +76,24 @@ export class Imaging {
 
   getCameraImage(options: any) {
     return Observable.create(observer => {
-      this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
-        success => {
-          this.camera.getPicture(options).then((imageData: any) => {
-            // imageData is a base64 encoded string as per options set above
-            let base64Image: string = "data:image/jpeg;base64," + imageData;
-            observer.next(base64Image);
-            observer.complete();
-          }, error => {
-            observer.error(error);
-          });
-        },
-        err => {
-          this.androidPermissions.requestPermissions(this.androidPermissions.PERMISSION.CAMERA);
-          observer.error("Try again");
-        }
-      );
+      this.platform.ready().then(() => {
+        this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
+          success => {
+            this.camera.getPicture(options).then((imageData: any) => {
+              // imageData is a base64 encoded string as per options set above
+              let base64Image: string = "data:image/jpeg;base64," + imageData;
+              observer.next(base64Image);
+              observer.complete();
+            }, error => {
+              observer.error(error);
+            });
+          },
+          err => {
+            this.androidPermissions.requestPermissions(this.androidPermissions.PERMISSION.CAMERA);
+            observer.error("Try again");
+          }
+        );
+      });
     });
   }
 
