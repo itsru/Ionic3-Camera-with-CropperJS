@@ -17,7 +17,7 @@ import { Camera } from '@ionic-native/camera';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  @ViewChild('fileInput') fileInput;
+  @ViewChild('fileInput') fileInput: any;
   image:any;
   width:number = 500;
   height:number = 500;
@@ -53,11 +53,16 @@ export class HomePage {
         this.imaging.cropImage(imageData, this.width, this.height).subscribe(croppedImage => {
           // Handle image after crop
           this.image = croppedImage;
+          this.resetFileReader();
         }, error=> {
           //Handle cropper abort
+          this.resetFileReader();
          });
       }
-      else { this.image = imageData; };
+      else {
+        this.image = imageData;
+        this.resetFileReader();
+       };
     };
 
     reader.onabort = function() {
@@ -65,6 +70,10 @@ export class HomePage {
       self.image = "";
     };
     reader.readAsDataURL(event.target.files[0]);
+  }
+
+  resetFileReader(){
+    this.fileInput.nativeElement.value = "";
   }
 
   toast(message: string) {

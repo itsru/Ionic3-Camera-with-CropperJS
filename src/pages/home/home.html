@@ -54,6 +54,6 @@
       </ion-item>
     </div>
   </ion-list>
-  <input type="file" #fileInput style="visibility: hidden; height: 0px" name="files[]" (change)="captureWebImage($event)" />
+    <input #fileInput type="file" style="visibility: hidden; height: 0px" name="file" (change)="captureWebImage($event)" accept="image/*">
   <button ion-button block outline (click)="addPhoto($event)"><span *ngIf="!platform.is('cordova')">Upload an image</span><span *ngIf="platform.is('cordova')">Take A Picture</span></button>
 </ion-content>
